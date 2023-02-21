@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import cv2
 import numpy as np
 from enum import Enum, auto
-import matplotlib as plt
+# import matplotlib as plt
 from PIL import Image
 import requests
 from collections import namedtuple
