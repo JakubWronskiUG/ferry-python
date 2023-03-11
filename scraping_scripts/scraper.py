@@ -1,3 +1,4 @@
+import datetime
 from bs4 import BeautifulSoup
 import cv2
 import pytesseract
@@ -9,6 +10,7 @@ from collections import namedtuple
 import pandas as pd
 from objects.ferry_companies import FerryCompany, CompanyInfoGetter, ScrapingType
 from objects.ports import Port, PortInfoGetter
+from objects.timetable import Timetable
 
 
 class CompanyNotSupportedException(Exception):
@@ -31,17 +33,22 @@ class Scraper:
             TimetableTouple = namedtuple(
                 "TimetabelsTouple", "timetable heading")
 
-            return_touples = []
+            timetables = []
 
             for table_section in table_sections:
-
+                
                 table_title = table_section.h5.text
-                headers = []
                 headers_set = table_section.find_all('th')
-                for header in headers_set:
-                    headers.append(header.text)
+                headers = [header.text for header in headers_set]
                 data = pd.DataFrame(columns=headers)
 
+                duration = 75 #TODO get from company object
+                ferry_id = '1'
+                departure_port = PortInfoGetter.get_port_from_text(table_title)
+                arrival_port  = Port.GILLSBAY if departure_port == Port.STMARGARETSHOPE else Port.STMARGARETSHOPE
+
+                timetable = Timetable(departure_port, arrival_port, ferry_id)
+                
                 rows = table_section.find_all('tr')[1:]
 
                 for j in rows:
@@ -49,12 +56,24 @@ class Scraper:
                     row = [i.text for i in row_data]
                     length = len(data)
                     data.loc[length] = row
+                
+                for column in data.columns:
+                    weekday = column.lower()
+                    timetable.load_route(
+                        departures = data[column],
+                        arrivals = [str((datetime.datetime(100, 1, 1, int(time.split(':')[0]), int(time.split(':')[1]), 0) + datetime.timedelta(minutes=duration)).time())[:5]
+                            for time in data[column]
+                        ],
+                        weekday = weekday
+                    )
+                
+                print(timetable.get_times())
 
-                t = TimetableTouple(data, table_title)
+                # t = TimetableTouple(data, table_title)
 
-                return_touples.append(t)
+                timetables.append(timetable)
 
-            return return_touples
+            return timetables
 
         except Exception as e:
             print(e)
@@ -205,49 +224,28 @@ class Scraper:
 
 class TimeTableScraper(Scraper):
 
-    def get_port_from_text(self, text: str) -> Port:
-        for port in Port:
-            # print(text)
-            if text.lower().find(PortInfoGetter.get_port_name(port).lower()) != -1:
-                # print("Found you!!!!", port)
-                return port
-        return None
-
     def get_timetables_for_company(self, company: FerryCompany) -> list:
 
         if company not in FerryCompany:
             raise CompanyNotSupportedException(
                 f'Company {company} is not supported.')
 
-        # return type
-        TimetableInfoBlock = namedtuple(
-            "TimetableInfoBlock", "timetable ferry_id port_from port_to")
-
         # select proper scraping tools
         scraping_type = CompanyInfoGetter.get_company_scraping_type(company)
         scraping_method = self.website_scraping_method[scraping_type]
-        url = CompanyInfoGetter.get_company_timetable_url(company)
+        urls = CompanyInfoGetter.get_company_timetable_urls(company)
         timetables = []
-        ferry_id = None
 
         # scrape
-        try:
-            timetables = scraping_method(url)
-        except ScrapingMethodDidNotWorkOnAWebsite:
-            print(
-                f'Scraping method {scraping_type} did not work for {url}. Check if website still supports this scraping method.')
-            return None
-        except Exception as e:
-            print(e)
-
-        # assign metadata
-        if company == FerryCompany.PENTLANDFERRIES:
-            ferry_id = "1"
-
-        return [TimetableInfoBlock(
-            t.timetable,
-            ferry_id,
-            self.get_port_from_text(t.heading),
-            Port.GILLSBAY if self.get_port_from_text(
-                t.heading) == Port.STMARGARETSHOPE else Port.STMARGARETSHOPE
-        ) for t in timetables]
+        for url in urls:
+            try:
+                for t in scraping_method(url):
+                    timetables.append(t)
+            except ScrapingMethodDidNotWorkOnAWebsite:
+                print(
+                    f'Scraping method {scraping_type} did not work for {url}. Check if website still supports this scraping method.')
+                return None
+            except Exception as e:
+                print(e)
+    
+        return timetables

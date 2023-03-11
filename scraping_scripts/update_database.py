@@ -17,8 +17,8 @@ class Collection(Enum):
 class DBUpdater:
 
     client = None
-    # db_name = 'test-python'
-    db_name = 'test'
+    db_name = 'test-python'
+    # db_name = 'test'
     db = None
 
     collections = {
@@ -30,7 +30,7 @@ class DBUpdater:
     }
 
     MONGODB_USER = 'python-user'
-    MONGODB_PASSWORD = 'pythonpassword'
+    MONGODB_PASSWORD = 'pythonpassword' #TODO move to env variable
     MONGODB_CONNECTION_STRING = "mongodb+srv://{}:{}@cluster0.qlxmvjb.mongodb.net/?retryWrites=true&w=majority&authSource=admin".format(
         MONGODB_USER,
         MONGODB_PASSWORD,
@@ -101,7 +101,7 @@ class DBUpdater:
             'portToId': trip.port_to_id,
             'tripDate': trip.trip_date,
             'hourStart': trip.hour_start,
-            'durationMinutes': trip.duration_minutes
+            'hourEnd': trip.hour_end
         }
 
         self.db[trips_collection].insert_one(update_dict)
@@ -130,8 +130,6 @@ class DBUpdater:
             self.append_trips_collection(trip)
 
         db = self.client['test']['companies']
-        dict = {'name': 'test_company'}
-        # db.insert_one(dict)
         print(db)
 
 

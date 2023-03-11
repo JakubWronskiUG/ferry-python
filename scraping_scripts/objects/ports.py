@@ -68,3 +68,10 @@ class PortInfoGetter:
     @staticmethod
     def get_port_country(port: Port):
         return PORTS[port].country
+    
+    @staticmethod
+    def get_port_from_text(text: str) -> Port:
+        for port in Port:
+            if text.lower().find(PortInfoGetter.get_port_name(port).lower()) != -1:
+                return port
+        return None
