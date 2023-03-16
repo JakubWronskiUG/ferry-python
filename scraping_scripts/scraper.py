@@ -6,9 +6,8 @@ import numpy as np
 from enum import Enum, auto
 from PIL import Image
 import requests
-from collections import namedtuple
 import pandas as pd
-from objects.ferry_companies import FerryCompany, CompanyInfoGetter, ScrapingType
+from objects.ferry_companies import FerryCompany, CompanyInfoGetter, ScrapingType, COMPANIES
 from objects.ports import Port, PortInfoGetter
 from objects.timetable import Timetable
 
@@ -30,9 +29,6 @@ class Scraper:
 
             table_sections = soup.find_all(class_='timetab')
 
-            TimetableTouple = namedtuple(
-                "TimetabelsTouple", "timetable heading")
-
             timetables = []
 
             for table_section in table_sections:
@@ -42,8 +38,8 @@ class Scraper:
                 headers = [header.text for header in headers_set]
                 data = pd.DataFrame(columns=headers)
 
-                duration = 75 #TODO get from company object
-                ferry_id = '1'
+                duration = CompanyInfoGetter.get_company_default_trip_duration(FerryCompany.PENTLANDFERRIES)
+                ferry_id = CompanyInfoGetter.get_company_default_ferry_id(FerryCompany.PENTLANDFERRIES)
                 departure_port = PortInfoGetter.get_port_from_text(table_title)
                 arrival_port  = Port.GILLSBAY if departure_port == Port.STMARGARETSHOPE else Port.STMARGARETSHOPE
 

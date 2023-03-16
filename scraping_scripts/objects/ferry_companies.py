@@ -21,7 +21,7 @@ class FerryCompanyObject:
     scraping_type = None
     default_ferry_id = None
 
-    def __init__(self, enum: FerryCompany, id: str, name: str, timetable_urls: list, home_url: str, tickets_url: str, scraping_type: ScrapingType, default_ferry_id: str, default_trip_time: int):
+    def __init__(self, enum: FerryCompany, id: str, name: str, timetable_urls: list, home_url: str, tickets_url: str, scraping_type: ScrapingType, default_ferry_id: str, default_trip_duration: int):
         self.enum = enum
         self.id = id
         self.name = name
@@ -30,7 +30,7 @@ class FerryCompanyObject:
         self.tickets_url = tickets_url
         self.scraping_type = scraping_type
         self.default_ferry_id = default_ferry_id
-        self.default_trip_time = default_trip_time
+        self.default_trip_duration = default_trip_duration
 
 
 COMPANIES = {
@@ -44,7 +44,7 @@ COMPANIES = {
             tickets_url='https://pentlandferries.co.uk',
             scraping_type=ScrapingType.HTMLTABLE,
             default_ferry_id="1",
-            default_trip_time=75
+            default_trip_duration=75
         ),
     FerryCompany.CALMAC:
         FerryCompanyObject(
@@ -56,7 +56,7 @@ COMPANIES = {
             tickets_url='https://ticketing.calmac.co.uk/booking/asp/web100.asp',
             scraping_type=ScrapingType.JPGTABLE,
             default_ferry_id="1",#TODO
-            default_trip_time=75 #TODO
+            default_trip_duration=75 #TODO
 
         )
 }
@@ -93,5 +93,5 @@ class CompanyInfoGetter:
         return COMPANIES[company].default_ferry_id
     
     @staticmethod
-    def get_company_default_trip_time(company: FerryCompany):
-        return COMPANIES[company].default_trip_time
+    def get_company_default_trip_duration(company: FerryCompany):
+        return COMPANIES[company].default_trip_duration

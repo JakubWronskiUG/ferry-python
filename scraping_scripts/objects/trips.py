@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from scraper import TimeTableScraper
 from .ferry_companies import FerryCompany, CompanyInfoGetter
 from .ports import Port, PortInfoGetter
-
+from ..settings import Settings
 
 class TripObject:
 
@@ -49,7 +49,7 @@ class TripsParser:
                 current_date = datetime.now()
                 times = timetable.get_times()
 
-                for d in range(60): # TODO move to settings
+                for d in range(Settings.days_to_generate):
                     weekday = current_date.strftime('%A')[:3].lower()
                     trips = times[weekday]
                     for trip_times in trips:
