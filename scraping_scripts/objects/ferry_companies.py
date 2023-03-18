@@ -55,7 +55,7 @@ COMPANIES = {
             home_url='https://calmac.co.uk',
             tickets_url='https://ticketing.calmac.co.uk/booking/asp/web100.asp',
             scraping_type=ScrapingType.JPGTABLE,
-            default_ferry_id="1",#TODO
+            default_ferry_id="1", #TODO
             default_trip_duration=75 #TODO
 
         )

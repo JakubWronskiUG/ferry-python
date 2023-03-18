@@ -1,3 +1,3 @@
 class Settings:
-    days_to_generate = 60
+    days_to_generate = 15
     

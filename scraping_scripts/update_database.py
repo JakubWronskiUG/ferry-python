@@ -100,8 +100,8 @@ class DBUpdater:
             'portFromId': trip.port_from_id,
             'portToId': trip.port_to_id,
             'tripDate': trip.trip_date,
-            'hourStart': trip.hour_start,
-            'hourEnd': trip.hour_end
+            'datetimeStart': trip.trip_start,
+            'datetimeEnd': trip.trip_end
         }
 
         self.db[trips_collection].insert_one(update_dict)
