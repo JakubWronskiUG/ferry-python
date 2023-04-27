@@ -4,6 +4,7 @@ from .ferry_companies import FerryCompany
 
 class Ferry(Enum):
     MVALFRED = auto()
+    MVLOCHFRISA = auto()
 
 
 class FerryObject:
@@ -37,6 +38,17 @@ FERRIES = {
         car_capacity=98,
         is_accessible=False,
     ),
+    Ferry.MVLOCHFRISA:
+    FerryObject(
+        enum=Ferry.MVLOCHFRISA,
+        comapny_enum=FerryCompany.CALMAC,
+        id="2",
+        name="MV Loch Frisa",
+        human_capacity=-1,
+        car_capacity=-1,
+        is_accessible=True,
+    ),
+
 }
 
 

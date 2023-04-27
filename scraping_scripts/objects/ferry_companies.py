@@ -1,5 +1,5 @@
 from enum import Enum, auto
-
+from .ports import Port
 
 class FerryCompany(Enum):
     PENTLANDFERRIES = auto()
@@ -51,12 +51,27 @@ COMPANIES = {
             enum=FerryCompany.CALMAC,
             id="2",
             name = "Calmac",
-            timetable_urls=['https://www.calmac.co.uk/image/7941/Table-02-Tarbert---Portavadie-Winter-2022---2023-timetable---This-image-is-currently-not-accessible-to-screen-readers.-Please-phone-0800-066-5000-for-timetable-details/original.jpg?m=1663683765797'],
+            timetable_urls=[
+                (
+                    'https://www.calmac.co.uk/image/8026/Table-11-Oban---Craignure-Winter-2022---2023-timetable---This-image-is-currently-not-accessible-to-screen-readers.-Please-phone-0800-066-5000-for-timetable-details/original.jpg?m=1668190374640',
+                    (430, 315, 740, 2605),
+                    Port.OBAN,
+                    Port.CRAIGNURE,
+                    "2"
+                ),
+                (
+                    'https://www.calmac.co.uk/image/8026/Table-11-Oban---Craignure-Winter-2022---2023-timetable---This-image-is-currently-not-accessible-to-screen-readers.-Please-phone-0800-066-5000-for-timetable-details/original.jpg?m=1668190374640',
+                    (710, 315, 972, 2605),
+                    Port.CRAIGNURE,
+                    Port.OBAN,
+                    "2"
+                )
+            ],
             home_url='https://calmac.co.uk',
             tickets_url='https://ticketing.calmac.co.uk/booking/asp/web100.asp',
             scraping_type=ScrapingType.JPGTABLE,
-            default_ferry_id="1", #TODO
-            default_trip_duration=75 #TODO
+            default_ferry_id="2",
+            default_trip_duration=0
 
         )
 }

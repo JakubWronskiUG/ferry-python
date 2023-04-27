@@ -8,7 +8,7 @@ class WrongWeekday(Exception):
 class Timetable:
 
     weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']    
-    weekday_times = {weekday:[] for weekday in weekdays}
+    weekday_times = None
     ferry_id = None
     departure_port = None
     arrival_port = None
@@ -17,6 +17,11 @@ class Timetable:
         self.departure_port = departure_port
         self.arrival_port = arrival_port
         self.ferry_id = ferry_id
+        self.weekday_times = {weekday:[] for weekday in self.weekdays}
+
+    def __str__(self):
+        print('Timetable: ', self.weekday_times)
+        return "Departure port: " + str(self.departure_port) + "\nArrival port: " + str(self.arrival_port) +"\nFerry ID: " + str(self.ferry_id)
     
     #Format:
     # routes -> {"mon": [(time1, time2), (time1a, time2a)]}

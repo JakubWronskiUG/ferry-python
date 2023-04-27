@@ -4,6 +4,8 @@ from enum import Enum, auto
 class Port(Enum):
     GILLSBAY = auto()
     STMARGARETSHOPE = auto()
+    OBAN = auto()
+    CRAIGNURE = auto()
 
 
 class PortObject:
@@ -43,7 +45,24 @@ PORTS = {
         island="Orkney",
         country="Scotland"
     ),
-
+    Port.OBAN:
+    PortObject(
+        enum=Port.OBAN,
+        id='3',
+        name='Oban',
+        city='Oban',
+        island='Mainland',
+        country='Scotland'
+    ),
+    Port.CRAIGNURE:
+    PortObject(
+        enum=Port.CRAIGNURE,
+        id='4',
+        name='Craignure',
+        city='Craignure',
+        island='Mull',
+        country='Scotland'
+    )
 }
 
 

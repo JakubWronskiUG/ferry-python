@@ -1,9 +1,13 @@
 from enum import Enum, auto
+import os
 from pymongo import MongoClient
 from objects.ferries import Ferry, FerryInfoGetter
 from objects.ferry_companies import FerryCompany, CompanyInfoGetter
 from objects.ports import Port, PortInfoGetter
 from objects.trips import TripObject, TripsParser
+
+class DBPasswordNotFoundInEnvironment(Exception):
+    pass
 
 
 class Collection(Enum):
@@ -17,8 +21,8 @@ class Collection(Enum):
 class DBUpdater:
 
     client = None
-    db_name = 'test-python'
-    # db_name = 'test'
+    # db_name = 'test-python'
+    db_name = 'test'
     db = None
 
     collections = {
@@ -30,7 +34,10 @@ class DBUpdater:
     }
 
     MONGODB_USER = 'python-user'
-    MONGODB_PASSWORD = 'pythonpassword' #TODO move to env variable
+    MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
+    if MONGODB_PASSWORD is None:
+        raise DBPasswordNotFoundInEnvironment
+    
     MONGODB_CONNECTION_STRING = "mongodb+srv://{}:{}@cluster0.qlxmvjb.mongodb.net/?retryWrites=true&w=majority&authSource=admin".format(
         MONGODB_USER,
         MONGODB_PASSWORD,
@@ -100,8 +107,9 @@ class DBUpdater:
             'portFromId': trip.port_from_id,
             'portToId': trip.port_to_id,
             'tripDate': trip.trip_date,
-            'datetimeStart': trip.trip_start,
-            'datetimeEnd': trip.trip_end
+            'hourStart': trip.hour_start,
+            'hourEnd': trip.hour_end,
+            'durationMinutes': trip.duration_minutes
         }
 
         self.db[trips_collection].insert_one(update_dict)
