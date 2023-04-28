@@ -9,7 +9,7 @@ import pandas as pd
 from objects.ferry_companies import FerryCompany, CompanyInfoGetter, ScrapingType, COMPANIES
 from objects.ports import Port, PortInfoGetter
 from objects.timetable import Timetable
-
+from settings import Settings
 
 class CompanyNotSupportedException(Exception):
     pass
@@ -84,7 +84,7 @@ class Scraper:
         ret = []
 
         filename = './scraping_scripts/assets/timetableimage.jpg'
-        pytesseract.pytesseract.tesseract_cmd = r'./tesseract-macos/5.3.0_1/bin/tesseract'
+        pytesseract.pytesseract.tesseract_cmd = Settings.tesseract_cmd_path
 
         image = Image.open(requests.get(url, stream=True).raw)
         # image = image.crop((40, 315, 1200, 2605)) #TODO save image timetable sizes
